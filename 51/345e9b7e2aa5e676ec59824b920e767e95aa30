@@ -1,0 +1,33 @@
+crates/wait_utils/src/wait_strategies/wait_until_http_health_check.rs
+  s_a09f48e62cdf50::t_aff3a4bb2df9f6 45,48-49
+crates/docker_utils/src/container_config.rs
+  s_a09f48e62cdf50::t_9f19412ae2a698 60-61
+crates/docker_utils/src/docker/pull.rs
+  s_a09f48e62cdf50::t_a78f57fb3e2913 41
+crates/service_utils/src/service/start.rs
+  s_a09f48e62cdf50::t_b53844e2413267 76-80
+  s_a09f48e62cdf50::t_717e8873ac6132 61,68
+crates/wait_utils/src/wait_strategies/wait_until_grpc_health_check.rs
+  s_a09f48e62cdf50::t_5ded2630cd70a3 58
+  s_a09f48e62cdf50::t_3fef3cac143501 64
+crates/docker_utils/src/docker/start.rs
+  s_a09f48e62cdf50::t_cd1a4812b42e58 140
+  s_a09f48e62cdf50::t_bce3287bab719f 149-150
+  s_a09f48e62cdf50::t_5a8330afdbf8b0 173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "51345e9b7e2aa5e676ec59824b920e767e95aa30",
+  "prompts": {},
+  "sessions": {
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
