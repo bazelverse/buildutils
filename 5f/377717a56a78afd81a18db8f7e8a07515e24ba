@@ -1,0 +1,76 @@
+crates/docker_utils/tests/mod.rs
+  s_a09f48e62cdf50::t_fe51ca00905791 8
+crates/docker_utils/src/docker/prune.rs
+  s_a09f48e62cdf50::t_7caab55263d864 18-19,26,28-33
+crates/docker_utils/src/docker/stop.rs
+  s_a09f48e62cdf50::t_4d4c45d0185a21 23,31-52
+crates/docker_utils/src/docker/check_running.rs
+  s_a09f48e62cdf50::t_f6dbc7495ce8dc 18-20,22
+crates/docker_utils/src/api.rs
+  s_a09f48e62cdf50::t_2763be8429bcfa 90
+  s_a09f48e62cdf50::t_961812b03064f0 168
+crates/docker_utils/tests/host_network_tests.rs
+  s_a09f48e62cdf50::t_4cf08c2ee914ac 55-58
+  s_a09f48e62cdf50::t_c28753b84811b6 1-54,59-124
+crates/docker_utils/README.md
+  s_a09f48e62cdf50::t_faee086a53fa48 214
+  s_a09f48e62cdf50::t_46d29c6b195785 87-88
+  s_a09f48e62cdf50::t_2510ef6ce92a0d 145,152-184
+  s_a09f48e62cdf50::t_a7175ec0e80b6c 200-203
+  s_a09f48e62cdf50::t_6b182a7b00bbdc 68
+  s_a09f48e62cdf50::t_5536c27d5f9031 57
+  s_a09f48e62cdf50::t_e46099d82aebf0 185
+crates/docker_utils/BUILD.bazel
+  s_a09f48e62cdf50::t_dc4ec3343831d1 1
+  s_a09f48e62cdf50::t_182cde843a9d42 24-32
+crates/docker_utils/src/container_config.rs
+  s_a09f48e62cdf50::t_8dc73d34a6d788 216-217,228
+  s_a09f48e62cdf50::t_380c0dbb49c0b0 81-83
+  s_a09f48e62cdf50::t_d524116b592dd0 31-47,60-65
+  s_a09f48e62cdf50::t_5a4294f840ae31 105,126
+  s_a09f48e62cdf50::t_0a5073a2e33cfc 142
+  s_a09f48e62cdf50::t_5061fe70a85e51 189-196
+crates/docker_utils/tests/BUILD.bazel
+  s_a09f48e62cdf50::t_7f5052007ad5c3 7
+crates/docker_utils/tests/container_config_tests.rs
+  s_a09f48e62cdf50::t_b0db8a607a7c29 50-51,55-72
+  s_a09f48e62cdf50::t_a2d1f53c50d105 19
+  s_a09f48e62cdf50::t_9f3dad9e3b8e01 73,143-173
+  s_a09f48e62cdf50::t_e79664a5b6590f 74
+crates/docker_utils/src/docker/start.rs
+  s_a09f48e62cdf50::t_c2e44647318fac 112,129,137-146,149
+  s_a09f48e62cdf50::t_7dbedbddcf82d7 160-164,169,183
+  s_a09f48e62cdf50::t_341328ee632902 166,174-179
+  s_a09f48e62cdf50::t_a1c1850c8f6aa2 180,286-571
+  s_a09f48e62cdf50::t_a5be6176fbcffd 36
+  s_a09f48e62cdf50::t_d082407c1bc51b 44,50,53,55,61,66-74
+  s_a09f48e62cdf50::t_4304f6354d9aa8 94
+crates/docker_utils/tests/docker_util_tests.rs
+  s_a09f48e62cdf50::t_f3e63a1cf0a0cf 125
+  s_a09f48e62cdf50::t_aa4546ebec6d39 169-250
+  s_a09f48e62cdf50::t_cd33650cb79eef 19-21
+  s_a09f48e62cdf50::t_927f6399fcd99c 108-124,126-168
+  s_a09f48e62cdf50::t_c3e34880cb9223 7
+crates/docker_utils/src/docker/utils.rs
+  s_a09f48e62cdf50::t_f38b82e29bbd69 58-61,65,69,71,75,79,82-85,87-96,109-112,114,117,123
+  s_a09f48e62cdf50::t_59239d11e24681 275-349,351-353
+  s_a09f48e62cdf50::t_32ca7a4900d88b 185-202,204-206,216,222-274
+  s_a09f48e62cdf50::t_ce44039ba08cbd 98-108
+  s_a09f48e62cdf50::t_4cf08c2ee914ac 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "5f377717a56a78afd81a18db8f7e8a07515e24ba",
+  "prompts": {},
+  "sessions": {
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
