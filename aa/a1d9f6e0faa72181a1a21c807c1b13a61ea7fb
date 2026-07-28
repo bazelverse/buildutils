@@ -1,0 +1,21 @@
+crates/docker_utils/src/docker/build.rs
+  s_a09f48e62cdf50::t_8c968daaf99165 26-27,32-33
+  s_a09f48e62cdf50::t_e82cad2a469bdb 44-54
+  s_a09f48e62cdf50::t_acf0157604eeeb 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "aaa1d9f6e0faa72181a1a21c807c1b13a61ea7fb",
+  "prompts": {},
+  "sessions": {
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
