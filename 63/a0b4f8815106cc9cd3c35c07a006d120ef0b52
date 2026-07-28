@@ -1,0 +1,64 @@
+crates/wait_utils/src/enum_wait_strategy.rs
+  s_a09f48e62cdf50::t_970ed4f2d77644 28,31,34-35
+crates/wait_utils/tests/utils_tests.rs
+  s_a09f48e62cdf50::t_4e1e420e689e5d 1-93
+crates/docker_utils/src/docker/utils.rs
+  s_a09f48e62cdf50::t_5f849e73df1a48 6
+crates/docker_utils/tests/mod.rs
+  s_a09f48e62cdf50::t_7cd888cc81eb78 6,10
+crates/wait_utils/tests/BUILD.bazel
+  s_a09f48e62cdf50::t_7cd888cc81eb78 29-43
+  s_a09f48e62cdf50::t_697073ebf673d9 1-28
+crates/docker_utils/src/lib.rs
+  s_a09f48e62cdf50::t_5f849e73df1a48 13
+  s_a09f48e62cdf50::t_f92f19846392d9 10-12
+crates/wait_utils/tests/console_output_tests.rs
+  s_a09f48e62cdf50::t_fd489497e20cfe 1-78,91-106
+  s_a09f48e62cdf50::t_bb3b3c3f5bf4f1 79-90
+crates/wait_utils/src/lib.rs
+  s_a09f48e62cdf50::t_50122905c6d709 11
+  s_a09f48e62cdf50::t_af849d5dc46a05 8-10
+crates/docker_utils/tests/utils_tests.rs
+  s_a09f48e62cdf50::t_9a37633a4a725d 1-8,12-284
+  s_a09f48e62cdf50::t_2941a4c21b8a6e 9-11
+crates/wait_utils/src/wait_strategies/wait_until_console_output.rs
+  s_a09f48e62cdf50::t_2941a4c21b8a6e 7
+  s_a09f48e62cdf50::t_60847403fd7b36 16-18
+  s_a09f48e62cdf50::t_d207d62c8eb1b1 62-64,68-72
+crates/docker_utils/tests/container_args_tests.rs
+  s_a09f48e62cdf50::t_ac9ec70622ae5e 1-185,190
+  s_a09f48e62cdf50::t_2941a4c21b8a6e 186-189
+crates/wait_utils/src/wait_strategies/wait_until_http_health_check.rs
+  s_a09f48e62cdf50::t_cad75e8d9ff7a0 12-15
+  s_a09f48e62cdf50::t_a9283c26782cda 44,51,53
+  s_a09f48e62cdf50::t_2941a4c21b8a6e 7
+crates/docker_utils/BUILD.bazel
+  s_a09f48e62cdf50::t_6962cd99c7f098 1
+crates/docker_utils/src/utils_test.rs
+  s_a09f48e62cdf50::t_d2af27721b9620 1-14,16-144
+  s_a09f48e62cdf50::t_5f849e73df1a48 15
+crates/wait_utils/tests/http_health_check_tests.rs
+  s_a09f48e62cdf50::t_788664a3a7e823 1-100
+crates/docker_utils/src/docker/start.rs
+  s_a09f48e62cdf50::t_5f849e73df1a48 6
+crates/docker_utils/tests/BUILD.bazel
+  s_a09f48e62cdf50::t_7cd888cc81eb78 6,39
+crates/wait_utils/src/utils_test.rs
+  s_a09f48e62cdf50::t_50122905c6d709 1-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "63a0b4f8815106cc9cd3c35c07a006d120ef0b52",
+  "prompts": {},
+  "sessions": {
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
