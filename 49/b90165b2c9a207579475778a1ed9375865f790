@@ -1,0 +1,100 @@
+crates/docker_utils/tests/docker_util_tests.rs
+  s_a09f48e62cdf50::t_6d031cfd60bf69 149-153
+  s_a09f48e62cdf50::t_0c91a89d7ccf12 251-294
+crates/wait_utils/tests/BUILD.bazel
+  s_a09f48e62cdf50::t_b7b5902e0844b6 34
+  s_a09f48e62cdf50::t_cbc1cf7035a0ea 21
+  s_a09f48e62cdf50::t_0d63ce50bb94e5 43-44
+crates/wait_utils/src/wait_strategies/wait_until_ready.rs
+  s_a09f48e62cdf50::t_2fdf3cd68e44b0 1-12,59-68,70-73,80-99,103-104,106-113,149-159,161-164,171-190,193-194,196-203,208-209,211-215,221-222,224,227-228,230,232-234,237-239,241-242,247,250-252
+  s_a09f48e62cdf50::t_c3abc25fe90887 105,195
+  s_a09f48e62cdf50::t_b3c3541bb9b633 216-217,219-220,243-246
+  s_a09f48e62cdf50::t_411206820f0690 13-58,69,74-79,100-102,114-148,160,165-170,191-192,204-207,210,218,223,225-226,229,231,235-236,240,248-249
+crates/docker_utils/tests/container_diagnostics_tests.rs
+  s_a09f48e62cdf50::t_6158582497f9b7 1-171
+crates/service_utils/src/service/wait.rs
+  s_a09f48e62cdf50::t_f0127b67ec776b 29-33,47-50,61-65
+  s_a09f48e62cdf50::t_70fd5052520dfd 51
+scripts/test.sh
+  s_a09f48e62cdf50::t_cbc1cf7035a0ea 18
+crates/docker_utils/src/docker/start.rs
+  s_a09f48e62cdf50::t_397279bd9f6900 245-249,263-267,277-281
+crates/docker_utils/src/docker/mod.rs
+  s_a09f48e62cdf50::t_a37d4baa41c739 14
+crates/docker_utils/src/docker/setup.rs
+  s_a09f48e62cdf50::t_2fec478eead4c3 69
+  s_a09f48e62cdf50::t_2a8e3188a4de20 58-59
+  s_a09f48e62cdf50::t_f21c6679c2baf5 47-50
+  s_a09f48e62cdf50::t_41c2923595d36b 73
+crates/docker_utils/src/utils_test.rs
+  s_a09f48e62cdf50::t_c6208d248cf8b1 191-194
+  s_a09f48e62cdf50::t_a37d4baa41c739 177-180
+  s_a09f48e62cdf50::t_8462e7187d528e 11,145-176,181-190,195-198
+  s_a09f48e62cdf50::t_74b801fcd46410 199
+crates/docker_utils/src/api.rs
+  s_a09f48e62cdf50::t_84ff14c8891cbd 6
+  s_a09f48e62cdf50::t_708e1edd8eb05a 325-371
+crates/docker_utils/tests/diagnostics_e2e_tests.rs
+  s_a09f48e62cdf50::t_c2c465c732ec72 1-18,21-202
+  s_a09f48e62cdf50::t_a37d4baa41c739 19-20
+crates/docker_utils/tests/mod.rs
+  s_a09f48e62cdf50::t_f22d703fef9a1a 8-9
+crates/wait_utils/src/wait_strategies/mod.rs
+  s_a09f48e62cdf50::t_14eac3c1f0ed03 9
+crates/docker_utils/src/docker/diagnostics.rs
+  s_a09f48e62cdf50::t_d8025578507913 34-40,62-72
+  s_a09f48e62cdf50::t_951d73f4e5f9f2 1-33,41-61,73-79
+crates/wait_utils/tests/wait_until_ready_tests.rs
+  s_a09f48e62cdf50::t_88a0fe3427f674 1-8,10,19,34,38-39,48,50-71,78-104,106-175,181,185-198
+  s_a09f48e62cdf50::t_09fd1954117b5c 9,11-18,20-33,35-37,40-47,49,72-77,105,182-184,199
+  s_a09f48e62cdf50::t_a37d4baa41c739 176-180
+crates/docker_utils/tests/BUILD.bazel
+  s_a09f48e62cdf50::t_7a0d5b16f3efd2 7,40
+  s_a09f48e62cdf50::t_cbc1cf7035a0ea 23
+crates/docker_utils/src/container/container_diagnostics.rs
+  s_60c0a6df14e261::t_fa3c199a1ef8dc 1-163
+crates/wait_utils/src/types/enum_probe.rs
+  s_a09f48e62cdf50::t_5cd7f1c1c2a028 1-19
+MODULE.bazel
+  s_a09f48e62cdf50::t_aa2e71f5abf09e 14
+README.md
+  s_a09f48e62cdf50::t_616cbe600a73f8 25
+crates/docker_utils/src/container/mod.rs
+  s_a09f48e62cdf50::t_8d05433320807b 1-6
+crates/docker_utils/src/lib.rs
+  s_a09f48e62cdf50::t_833418621b4940 7,16-17
+crates/wait_utils/src/lib.rs
+  s_a09f48e62cdf50::t_d065748aca0551 7-8,11-19
+crates/wait_utils/src/types/mod.rs
+  s_a09f48e62cdf50::t_84eff0b9dd825d 1-6
+crates/wait_utils/src/utils/mod.rs
+  s_a09f48e62cdf50::t_6215bf867361df 1-8
+crates/wait_utils/src/wait_strategies/wait_until_console_output.rs
+  s_a09f48e62cdf50::t_d88f4c460e4add 7
+crates/wait_utils/src/wait_strategies/wait_until_http_health_check.rs
+  s_a09f48e62cdf50::t_208a8d58e015f7 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "49b90165b2c9a207579475778a1ed9375865f790",
+  "prompts": {},
+  "sessions": {
+    "s_60c0a6df14e261": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a179e2cfdaf0522a0",
+        "model": "unknown"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    },
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
