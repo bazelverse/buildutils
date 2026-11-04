@@ -1,6 +1,6 @@
 [package]
 name = "service_utils"
-version = "0.4.0"
+version = "0.4.1"
 description = "Utilities for service integration testsing"
 readme = "README.md"
 edition.workspace = true
