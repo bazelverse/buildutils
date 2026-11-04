@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0](https://github.com/bazelverse/buildutils/compare/wait_utils-v0.2.0...wait_utils-v0.4.0) - 2026-11-04
+
+### Added
+
+- [**breaking**] std-only wait, service and docker utils; migrate to rules_rs
+
 ## [0.2.0](https://github.com/marvin-hansen/buildutils/compare/wait_utils-v0.1.7...wait_utils-v0.2.0) - 2026-07-29
 
 ### Added
