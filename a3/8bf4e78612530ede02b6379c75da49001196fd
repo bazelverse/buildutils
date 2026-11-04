@@ -1,0 +1,115 @@
+.bazelversion
+  s_6c9dcf457e80d9::t_86782f3bf0079b 1
+BUILD.md
+  s_6c9dcf457e80d9::t_8a486d764a60cc 52,54-55,60-61,63
+Cargo.toml
+  s_6c9dcf457e80d9::t_46cf176ce4c36d 26-27,35-37
+MODULE.bazel
+  s_6c9dcf457e80d9::t_a3af3e8ce4e78f 7,9-10,13,15-41,43-49,51-56,58,60,62-83,85
+MODULE.bazel.lock
+  s_6c9dcf457e80d9::t_1fdd80428967ce 22-25,40,46,48,50,56-57,63,70,73-74,77-78,80-81,89-90,97-103,108-109,157-158,160-164,167,183,221,223-226,231-232,249-250,254-259,262-263,267-269,275,332-333,500-501,527-886,888-990
+crates/docker_utils/BUILD.bazel
+  s_6c9dcf457e80d9::t_44bf9fdb6c0a2d 10
+crates/docker_utils/Cargo.toml
+  s_6c9dcf457e80d9::t_7828d8f7aafde1 3,21-24,28-30
+crates/docker_utils/README.md
+  s_6c9dcf457e80d9::t_a6a571b2220925 197,235
+crates/docker_utils/src/container/container_config.rs
+  s_6c9dcf457e80d9::t_37c6da909dd9fe 64,91-234,236-241
+crates/docker_utils/src/docker/start.rs
+  s_6c9dcf457e80d9::t_9a9d612770ccd1 343-347
+crates/docker_utils/tests/BUILD.bazel
+  s_6c9dcf457e80d9::t_8c7d193eb022e1 34
+crates/docker_utils/tests/docker_util_tests.rs
+  s_6c9dcf457e80d9::t_8d519a4f791d65 34-35,40,42,44,46,48,51,66,82,89,102,138-139,199-200,227-228,249-250,265-266,284-285
+crates/docker_utils/tests/host_network_tests.rs
+  s_6c9dcf457e80d9::t_f2bce4ec566f5e 48-49,90-91
+crates/docker_utils/tests/wait_until_ready_tests.rs
+  s_6c9dcf457e80d9::t_507387123267c1 53,116,120-121
+crates/service_utils/BUILD.bazel
+  s_6c9dcf457e80d9::t_3a4457d9fb4452 9
+crates/service_utils/Cargo.toml
+  s_6c9dcf457e80d9::t_e9b72cc7a1c7a1 3,19-22
+crates/service_utils/README.md
+  s_6c9dcf457e80d9::t_bc98e1eb6a7e62 56,58-83,134,139,147,168,246,277,286,299
+crates/service_utils/src/api.rs
+  s_6c9dcf457e80d9::t_7a44df99561ebb 7-8,23,27,41,45,70,84-85,100,105,108,110-111,119,126-127,129,131-132,139-140,142,146-163
+crates/service_utils/src/error/service_util_error.rs
+  s_6c9dcf457e80d9::t_c56bbddceaf923 19-21,52-54
+crates/service_utils/src/service/build.rs
+  s_6c9dcf457e80d9::t_d14fbf5cd044bc 10,28
+crates/service_utils/src/service/drop.rs
+  s_6c9dcf457e80d9::t_12557c04227cee 1-4,6,8-23
+crates/service_utils/src/service/mod.rs
+  s_6c9dcf457e80d9::t_5947fcdbb4bfb4 9,16-21,27-28
+crates/service_utils/src/service/start.rs
+  s_6c9dcf457e80d9::t_063694a816b77b 7-9,13,26-35,39,47-48,73-75,80-93,114,117
+crates/service_utils/src/service/stop.rs
+  s_6c9dcf457e80d9::t_bfd4f10b0f6de9 7-14,17-19,22-26,34-42,45-66,68-79,81-84
+crates/service_utils/src/service/wait.rs
+  s_6c9dcf457e80d9::t_08b170bdf76ce3 7,11-13,15-18,21,24,26-32,34-48,50-52,54-77,79-83,85-126,129-130,132-136,138,140-143,145-150,152-157
+crates/service_utils/src/service_config.rs
+  s_6c9dcf457e80d9::t_340d3827bad63f 7,51,65-162,166-171,215-216,252-263
+crates/service_utils/tests/service_util_test.rs
+  s_6c9dcf457e80d9::t_eb07ac178301bf 13-15,21,26-27,73-74,77,86-87,90,98-99,103-104,116,130-131,136-137,162-163,166-167,189-190,193-194,218-219,222-223,244-245,248-249,268-270,273-274,302-303,306-307,330-532
+crates/wait_utils/BUILD.bazel
+  s_6c9dcf457e80d9::t_be993ce128afbf 10-11,21-23
+crates/wait_utils/Cargo.toml
+  s_6c9dcf457e80d9::t_81988bbf7a7a32 3,21-24,26-28
+crates/wait_utils/README.md
+  s_6c9dcf457e80d9::t_3d6bd0cccb0083 40-42,46,50,131,141,171-176
+crates/wait_utils/src/lib.rs
+  s_6c9dcf457e80d9::t_7dc81eeef23f1e 17
+crates/wait_utils/src/types/enum_wait_strategy.rs
+  s_6c9dcf457e80d9::t_ef24b1976f8809 75,98
+crates/wait_utils/src/utils/utils_test.rs
+  s_6c9dcf457e80d9::t_5c5f8c520ab5a1 6,8-9,11-48,50-140
+crates/wait_utils/src/wait_strategies/mod.rs
+  s_6c9dcf457e80d9::t_564ca592e0c578 7
+crates/wait_utils/src/wait_strategies/wait_until_console_output.rs
+  s_6c9dcf457e80d9::t_172f740f18803d 9
+crates/wait_utils/src/wait_strategies/wait_until_grpc_health_check.rs
+  s_6c9dcf457e80d9::t_929b4d2ba03aa4 7,20-24,29-55,57,64,69
+crates/wait_utils/src/wait_strategies/wait_until_http_health_check.rs
+  s_6c9dcf457e80d9::t_f66bf8f07aab44 7-11,18-19,22,26-27,34-35,44,49,51,53,71-72,75-84,86-90,92-93,96,100
+crates/wait_utils/tests/http_health_check_tests.rs
+  s_6c9dcf457e80d9::t_461cb1ab6ba603 45-46,100-108
+crates/wait_utils/tests/utils_tests.rs
+  s_6c9dcf457e80d9::t_a038c8b0311057 6,8,13-18,22-25,29-34,38-44,46-56
+examples/service_example/BUILD.bazel
+  s_6c9dcf457e80d9::t_ebcfbf7cc5cfb2 19-21
+examples/service_utils_example/README.md
+  s_6c9dcf457e80d9::t_d70230016b4773 18,32,55
+examples/service_utils_example/tests/service_utils_tests.rs
+  s_6c9dcf457e80d9::t_3b483b3f667204 7-8,17,19-20,41,47,54-57,85-99
+scripts/format.sh
+  s_6c9dcf457e80d9::t_ef417ce4b9be07 14
+scripts/lint.sh
+  s_6c9dcf457e80d9::t_5349a70e904f4e 23
+.github/workflows/release-plz.yml
+  s_a09f48e62cdf50::t_6cfdeeb4a4743b 9-10,26-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a38bf4e78612530ede02b6379c75da49001196fd",
+  "prompts": {},
+  "sessions": {
+    "s_6c9dcf457e80d9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e223492-f4c5-4f68-93b3-4ec87d773715",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    },
+    "s_a09f48e62cdf50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "21d9e5b1-f558-42f2-8f67-17902f824d9c",
+        "model": "unknown"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
