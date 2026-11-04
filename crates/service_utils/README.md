@@ -123,7 +123,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-service_utils = "0.2"
+service_utils = "0.4"
 ```
 
 ### Basic Example

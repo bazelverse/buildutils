@@ -66,7 +66,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-docker_utils = "0.3"
+docker_utils = "0.4"
 ```
 
 ## Quick Start
