@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1](https://github.com/bazelverse/buildutils/compare/service_utils-v0.4.0...service_utils-v0.4.1) - 2026-11-04
+
+### Other
+
+- release v0.4.0
+
 ## [0.4.0](https://github.com/bazelverse/buildutils/compare/service_utils-v0.3.1...service_utils-v0.4.0) - 2026-11-04
 
 ### Added
