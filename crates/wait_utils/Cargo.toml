@@ -1,6 +1,6 @@
 [package]
 name = "wait_utils"
-version = "0.4.0"
+version = "0.4.1"
 description = "Utilities for implementing wait loops using varies wait strategies"
 readme = "README.md"
 edition.workspace = true
