@@ -1,6 +1,6 @@
 [package]
 name = "service_utils"
-version = "0.3.1"
+version = "0.4.0"
 description = "Utilities for service integration testsing"
 readme = "README.md"
 edition.workspace = true
@@ -16,12 +16,11 @@ exclude = ["*.bazel", "*/*.bazel",  "*.bazel.*", "BUILD", "BUILD.bazel", "MODULE
 [lints]
 workspace = true
 
+[features]
+# The gRPC health check strategy, the one wait that needs more than std.
+grpc = ["wait_utils/grpc"]
+
 [dependencies]
-# Internal crates
 wait_utils = {workspace = true}
-# External crates
-bon = { workspace = true }
 
 [dev-dependencies]
-# Only the test suite needs a runtime: the crate itself is async, but drives no runtime of its own.
-tokio = { workspace = true }

@@ -19,10 +19,6 @@ path = "src/fakelib.rs"
 [dev-dependencies]# Internal crates
 service_example = {workspace = true}
 service_utils   = {workspace = true}
-# External crates
-reqwest = { workspace = true }
-serde = {workspace = true}
-tokio = { workspace = true }
 
 [lints]
 workspace = true

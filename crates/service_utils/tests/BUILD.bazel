@@ -27,7 +27,5 @@ rust_test_suite(
     deps = [
         # Crate under test
         "//alias:service_utils",
-        # External crates
-        "//thirdparty/crates:tokio",
     ],
 )

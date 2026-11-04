@@ -40,7 +40,5 @@ rust_test_suite(
     deps = [
         # Crate to test
         "//alias:wait_utils",
-        # External crates
-        "//thirdparty/crates:tokio",
     ],
 )

@@ -7,7 +7,7 @@ use crate::service::verify::verify_binary_exists;
 use crate::{ServiceUtil, ServiceUtilError};
 
 impl ServiceUtil {
-    pub(crate) async fn build(
+    pub(crate) fn build(
         dbg: bool,
         root_path: &'static str,
         binaries: Vec<&'static str>,
@@ -25,6 +25,7 @@ impl ServiceUtil {
             dbg,
             root_path,
             binaries,
+            children: Default::default(),
         })
     }
 }

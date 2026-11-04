@@ -3,13 +3,9 @@
  * Copyright (c) "2025" . The buildutils Authors and Contributors. All Rights Reserved.
  */
 
-use serde::{Deserialize, Serialize};
 use service_utils::{ServiceStartConfig, ServiceUtil, WaitStrategy};
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct GreetResponse {
-    pub message: String,
-}
+use std::io::{Read, Write};
+use std::net::TcpStream;
 
 // Bazel already copied the binary into the tests directory during the build stage
 const BAZEL_ROOT_PATH: &str = "examples/service_utils_example/tests";
@@ -18,10 +14,10 @@ const BAZEL_ROOT_PATH: &str = "examples/service_utils_example/tests";
 const CARGO_ROOT_PATH: &str = "tests";
 // Bazel renamed the binary to "service"
 const PROGRAM: &str = "service";
-const BASE_URL: &str = "http://localhost:4242/";
+const ADDRESS: &str = "127.0.0.1:4242";
 
-#[tokio::test]
-async fn test_service() {
+#[test]
+fn test_service() {
     // Print working directory
     println!(
         "Working directory: {}",
@@ -42,35 +38,23 @@ async fn test_service() {
     println!("Root path: {}", root_path);
 
     println!(" Build service utils");
-    let res = ServiceUtil::with_debug(root_path, vec![PROGRAM]).await;
+    let res = ServiceUtil::with_debug(root_path, vec![PROGRAM]);
     // dbg!(&res);
     assert!(res.is_ok());
     let util = res.unwrap();
 
     println!("Start service");
-    let res = util
-        .start_service_from_config(get_service_start_config())
-        .await;
+    let res = util.start_service_from_config(get_service_start_config());
     // dbg!(&res);
     assert!(res.is_ok(), "{res:?}");
     let pid = res.unwrap();
     println!("Service started with PID {pid}");
 
     println!("Test service");
-    let url = format!("{BASE_URL}hello");
-
-    let resp = reqwest::get(url)
-        .await
-        .expect("Failed to send request")
-        .json::<GreetResponse>()
-        .await;
-
-    // dbg!(&resp);
-    assert!(resp.is_ok());
-    let resp = resp.unwrap();
-
-    println!("{resp:#?}");
-    assert_eq!(resp.message, "Hello world!");
+    let response = get("/hello");
+    println!("{response}");
+    assert!(response.starts_with("HTTP/1.1 200"), "{response}");
+    assert!(response.contains("Hello world!"), "{response}");
 
     // Stop what we started. Under Bazel the sandbox would do it anyway, but under Cargo there
     // is none, and a service left holding port 4242 makes the next run of this test fail.
@@ -97,4 +81,19 @@ fn get_service_start_config() -> ServiceStartConfig {
         .program(PROGRAM)
         .wait_strategy(get_service_wait_strategy(4242))
         .build()
+}
+
+/// The whole response to a `GET` of `path` on the service: the example needs no HTTP client.
+fn get(path: &str) -> String {
+    let mut stream = TcpStream::connect(ADDRESS).expect("Failed to connect to the service");
+    write!(
+        stream,
+        "GET {path} HTTP/1.1\r\nHost: {ADDRESS}\r\nConnection: close\r\n\r\n"
+    )
+    .expect("Failed to send the request");
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .expect("Failed to read the response");
+    response
 }

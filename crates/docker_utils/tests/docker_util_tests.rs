@@ -31,24 +31,24 @@ fn get_test_container_config() -> ContainerConfig<'static> {
 // Otherwise, on local runs, this test suite may stop containers that are used in other tests and hence
 // lead to random flaky tests and / or incorrect test results.
 
-#[tokio::test]
-async fn test_docker_util() {
+#[test]
+fn test_docker_util() {
     let docker_util = DockerUtil::with_debug().expect("Failed to create DockerUtil");
     let container_config = get_test_container_config();
     let container_id = "nginx-80";
 
-    test_pull(&docker_util, &container_config, container_id).await;
+    test_pull(&docker_util, &container_config, container_id);
 
-    test_start_container(&docker_util, &container_config, container_id, 80).await;
+    test_start_container(&docker_util, &container_config, container_id, 80);
 
-    test_container_exists(&docker_util, container_id).await;
+    test_container_exists(&docker_util, container_id);
 
-    test_stop_container(&docker_util, container_id).await;
+    test_stop_container(&docker_util, container_id);
 
-    test_container_stopped(&docker_util, container_id).await;
+    test_container_stopped(&docker_util, container_id);
 }
 
-async fn test_pull(
+fn test_pull(
     docker_util: &DockerUtil,
     container_config: &ContainerConfig<'static>,
     container_id: &str,
@@ -63,7 +63,7 @@ async fn test_pull(
     assert!(res.is_ok());
 }
 
-async fn test_start_container(
+fn test_start_container(
     docker_util: &DockerUtil,
     container_config: &ContainerConfig<'static>,
     expected_container_id: &str,
@@ -79,14 +79,14 @@ async fn test_start_container(
     assert_eq!(container_port, expected_container_port);
 }
 
-async fn test_container_exists(docker_util: &DockerUtil, container_id: &str) {
+fn test_container_exists(docker_util: &DockerUtil, container_id: &str) {
     println!("test_container_exists");
 
     let res = docker_util.check_if_container_is_running(container_id);
     assert!(res.is_ok());
 }
 
-async fn test_stop_container(docker_util: &DockerUtil, container_id: &str) {
+fn test_stop_container(docker_util: &DockerUtil, container_id: &str) {
     println!("test_stop_container");
 
     let delete_container = true;
@@ -99,7 +99,7 @@ async fn test_stop_container(docker_util: &DockerUtil, container_id: &str) {
     assert!(!res.unwrap());
 }
 
-async fn test_container_stopped(docker_util: &DockerUtil, container_id: &str) {
+fn test_container_stopped(docker_util: &DockerUtil, container_id: &str) {
     println!("test_container_stopped");
 
     let res = docker_util.check_if_container_is_running(container_id);
@@ -135,8 +135,8 @@ fn get_conflict_container_config(name: &'static str) -> ContainerConfig<'static>
 ///
 /// Previously the exit status was ignored and stderr discarded, so a container that never
 /// started was waited on until the wait strategy timed out, hiding the actual cause.
-#[tokio::test]
-async fn test_start_container_reports_docker_run_failure() {
+#[test]
+fn test_start_container_reports_docker_run_failure() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
 
     // Occupy the port with a first container.
@@ -196,8 +196,8 @@ fn remove_bare_container(name: &str) {
 ///
 /// Docker matches the `name` filter as an unanchored regular expression, so looking up
 /// `<name>-808` previously also matched `<name>-8080` and reported it as running.
-#[tokio::test]
-async fn test_check_running_matches_the_container_id_exactly() {
+#[test]
+fn test_check_running_matches_the_container_id_exactly() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
 
     let running = "docker-utils-exact-8080";
@@ -224,8 +224,8 @@ async fn test_check_running_matches_the_container_id_exactly() {
 ///
 /// The port used to be parsed out of the ID with an `expect`, so checking a container whose
 /// name has no numeric suffix panicked instead of returning a result.
-#[tokio::test]
-async fn test_check_running_for_container_without_port_suffix() {
+#[test]
+fn test_check_running_for_container_without_port_suffix() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
     let name = "dockerutilsnoportsuffix";
 
@@ -246,8 +246,8 @@ async fn test_check_running_for_container_without_port_suffix() {
 /// Containers carry `--rm`, so Docker reaps them the moment they exit. A teardown that
 /// errored on the corpse would mask the failure that produced it, which is the more
 /// interesting one.
-#[tokio::test]
-async fn test_deleting_a_container_that_is_already_gone_succeeds() {
+#[test]
+fn test_deleting_a_container_that_is_already_gone_succeeds() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
 
     let res = docker_util.stop_container("docker-utils-never-started-1234", true);
@@ -262,8 +262,8 @@ async fn test_deleting_a_container_that_is_already_gone_succeeds() {
 ///
 /// The caller named a container to stop rather than a state to reach, so silence would hide
 /// a typo or a container that never started.
-#[tokio::test]
-async fn test_stopping_a_container_that_is_not_running_is_reported() {
+#[test]
+fn test_stopping_a_container_that_is_not_running_is_reported() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
 
     let res = docker_util.stop_container("docker-utils-never-started-1234", false);
@@ -281,8 +281,8 @@ async fn test_stopping_a_container_that_is_not_running_is_reported() {
 /// the evidence: it happens before the caller can collect the container's diagnostics, which
 /// is the worst possible moment to panic. This test fails if either the wait or the setup
 /// path goes back to `.expect()`, because a panic is a test failure.
-#[tokio::test]
-async fn test_a_failing_wait_strategy_is_reported_rather_than_panicking() {
+#[test]
+fn test_a_failing_wait_strategy_is_reported_rather_than_panicking() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
     let name = "docker-utils-waitfail";
     let port = 6398;

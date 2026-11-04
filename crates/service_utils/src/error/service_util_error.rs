@@ -16,6 +16,9 @@ pub enum ServiceUtilError {
     ServiceStopFailed(String),
     ServiceNotSupported(String),
     ServiceNotRunning(String),
+    /// The service exited before it became ready. The message holds how it exited and its PID,
+    /// which `wait_for_exit` still answers for.
+    ServiceExited(String),
     UnsupportedWaitStrategy(String),
     UnknownError(String),
 }
@@ -45,6 +48,9 @@ impl fmt::Display for ServiceUtilError {
             }
             Self::ServiceNotRunning(e) => {
                 write!(f, "[ServiceUtilError]: Service not running: {e}")
+            }
+            Self::ServiceExited(e) => {
+                write!(f, "[ServiceUtilError]: Service exited: {e}")
             }
             Self::UnsupportedWaitStrategy(e) => {
                 write!(f, "[ServiceUtilError]: Unsupported wait strategy: {e}")

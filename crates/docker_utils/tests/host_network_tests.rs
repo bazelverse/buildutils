@@ -45,8 +45,8 @@ fn inspect(container_id: &str, format: &str) -> String {
 
 /// A container configured with `host_network` must run on the host network and publish
 /// nothing, because Docker discards published ports in host network mode.
-#[tokio::test]
-async fn test_host_network_container() {
+#[test]
+fn test_host_network_container() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
     let container_config = get_host_network_container_config();
     let container_id = format!("{HOST_NETWORK_NAME}-{HOST_NETWORK_PORT}");
@@ -87,8 +87,8 @@ async fn test_host_network_container() {
 
 /// The same container published rather than on the host network, to confirm that the
 /// assertions above actually distinguish the two modes.
-#[tokio::test]
-async fn test_published_container_is_not_on_the_host_network() {
+#[test]
+fn test_published_container_is_not_on_the_host_network() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
     let name = "docker-utils-published";
     let port = 6380;

@@ -78,7 +78,6 @@ the crates.
     make fix            Fixes linting issues as reported by clippy.
     make test           Tests across all crates with Bazel.
     make test_cargo     Tests across all crates with Cargo, staging binaries first.
-    make vendor         Vendors all Bazel managed Rust dependencies to folder thirdparty.
 ```
 
 For more details on the project build configuration, please read the [BUILD.md file](BUILD.md).

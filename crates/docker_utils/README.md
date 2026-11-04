@@ -194,9 +194,7 @@ The crate provides several wait strategies through the `wait_utils` dependency:
 - `WaitForHttpHealthCheck(String, u64)`: Wait until an HTTP request to the given URL or until a timeout occurs.
 - `WaitUntilReady { probe, timeout_secs, retry_delay_ms }`: Wait until your own probe reports ready.
 
-`WaitForGrpcHealthCheck` is not honoured here: it needs an async driver. Use `service_utils`,
-or express the check as `WaitUntilReady`. It is reported as unsupported rather than silently
-waiting.
+- `WaitForGrpcHealthCheck(String, u64)`: Wait until a gRPC health request succeeds, with the `grpc` feature.
 
 Whatever the strategy, the container is checked for liveness between attempts. A container that
 dies mid-wait aborts the wait immediately, instead of running out the clock and reporting a
@@ -234,7 +232,7 @@ let config = ContainerConfig::builder()
 
 The host and port the probe receives are the ones declared on the config. The probe runs on a
 thread of its own, so it may build its own async runtime even when `setup_container` was called
-from inside `#[tokio::test]`.
+from inside an async test.
 
 ## Container Diagnostics 🔎
 

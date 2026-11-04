@@ -1,6 +1,6 @@
 [package]
 name = "docker_utils"
-version = "0.3.5"
+version = "0.4.0"
 description = "Utilities for integration testsing with Docker"
 readme = "README.md"
 edition.workspace = true
@@ -18,10 +18,13 @@ exclude = ["*.bazel", "*/*.bazel",  "*.bazel.*", "BUILD", "BUILD.bazel", "MODULE
 workspace = true
 
 
-[dependencies]
-# Internal crates
-wait_utils = {workspace = true}
-# External crates
-bon = { workspace = true }
-tokio = {workspace = true}
+[features]
+# The gRPC health check strategy, the one wait that needs more than std.
+grpc = ["wait_utils/grpc"]
 
+[dependencies]
+wait_utils = {workspace = true}
+
+[dev-dependencies]
+# One test proves a readiness probe may build a runtime of its own.
+tokio = { workspace = true }
