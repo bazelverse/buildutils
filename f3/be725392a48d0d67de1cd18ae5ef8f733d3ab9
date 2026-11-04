@@ -1,0 +1,21 @@
+crates/docker_utils/README.md
+  s_6c9dcf457e80d9::t_f587ab8759c10c 69
+crates/service_utils/README.md
+  s_6c9dcf457e80d9::t_188a49089ccf45 126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f3be725392a48d0d67de1cd18ae5ef8f733d3ab9",
+  "prompts": {},
+  "sessions": {
+    "s_6c9dcf457e80d9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e223492-f4c5-4f68-93b3-4ec87d773715",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Marvin Hansen <marvin.hansen@gmail.com>"
+    }
+  }
+}
