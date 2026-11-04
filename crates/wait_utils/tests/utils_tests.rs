@@ -3,50 +3,57 @@
  * Copyright (c) "2025" . The buildutils Authors and Contributors. All Rights Reserved.
  */
 
-//! Tests for the pure helpers behind the wait strategies. These run no command and need
-//! neither curl nor Docker.
+//! Tests for the pure helpers behind the wait strategies. These need neither a network nor Docker.
 
-use wait_utils::utils_test::{build_curl_args, streams_contain};
+use wait_utils::utils_test::{parse_http_url, parse_status_line, streams_contain};
 
 const EXPECTED: &str = "ready to accept requests";
 
 #[test]
-fn test_build_curl_args_fails_on_an_error_status() {
-    let args = build_curl_args("http://localhost:8080/health");
+fn test_a_url_reads_as_its_host_port_and_path() {
+    let target = parse_http_url("http://localhost:8080/health").expect("a URL");
+    assert_eq!(target.host(), "localhost");
+    assert_eq!(target.port(), 8080);
+    assert_eq!(target.path(), "/health");
+    assert_eq!(target.authority(), "localhost:8080");
+}
 
-    // Without --fail curl reports success for a 503, which is the whole defect: the
-    // strategy degrades to "the port answered".
-    assert!(
-        args.contains(&"--fail".to_string()),
-        "curl must fail on an error status, got: {args:?}"
+#[test]
+fn test_a_url_defaults_its_port_and_path() {
+    let target = parse_http_url("http://example.org").expect("a URL");
+    assert_eq!(target.port(), 80);
+    assert_eq!(target.path(), "/");
+}
+
+#[test]
+fn test_a_bracketed_ipv6_host_loses_its_brackets() {
+    let target = parse_http_url("http://[::1]:8080/x").expect("a URL");
+    assert_eq!(target.host(), "::1");
+    assert_eq!(target.port(), 8080);
+    assert_eq!(parse_http_url("http://[::1]/").expect("a URL").port(), 80);
+    assert!(parse_http_url("http://[::1").is_err());
+}
+
+#[test]
+fn test_a_url_that_cannot_be_probed_is_refused_by_name() {
+    let https = parse_http_url("https://example.org/health").expect_err("https");
+    assert!(https.contains("https is not supported"), "{https}");
+    assert!(parse_http_url("ftp://example.org").is_err());
+    assert!(parse_http_url("http://").is_err());
+    assert!(parse_http_url("http://host:notaport/").is_err());
+}
+
+#[test]
+fn test_a_status_line_gives_its_status() {
+    assert_eq!(
+        parse_status_line(b"HTTP/1.1 503 Service Unavailable\r\n"),
+        Some(503)
     );
-}
-
-#[test]
-fn test_build_curl_args_discards_the_body() {
-    let args = build_curl_args("http://localhost:8080/health");
-    let output = args
-        .iter()
-        .position(|a| a == "--output")
-        .expect("curl must discard the body");
-
-    assert_eq!(args[output + 1], "/dev/null");
-}
-
-#[test]
-fn test_build_curl_args_keeps_the_error_readable() {
-    let args = build_curl_args("http://localhost:8080/health");
-
-    assert!(args.contains(&"--silent".to_string()));
-    assert!(args.contains(&"--show-error".to_string()));
-}
-
-#[test]
-fn test_build_curl_args_ends_with_the_url() {
-    let health_url = "http://localhost:8080/health";
-    let args = build_curl_args(health_url);
-
-    assert_eq!(args.last().unwrap(), health_url);
+    assert_eq!(parse_status_line(b"HTTP/1.0 200\r\nHost: x\r\n"), Some(200));
+    assert_eq!(parse_status_line(b"SSH-2.0-OpenSSH\r\n"), None);
+    assert_eq!(parse_status_line(b"HTTP/1.1 abc\r\n"), None);
+    assert_eq!(parse_status_line(b""), None);
+    assert_eq!(parse_status_line(&[0xff, 0xfe]), None);
 }
 
 #[test]

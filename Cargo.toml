@@ -23,7 +23,8 @@ all = "warn"
 
 # Linting strict mode
 [workspace.lints.rust]
-# Warnings
+unsafe_code = "forbid"
+bare_trait_objects = "forbid"
 deprecated-safe = "warn"
 deprecated_safe_2024 = "warn"
 
@@ -31,15 +32,13 @@ deprecated_safe_2024 = "warn"
 # ==============
 # Internal Aliases
 # ==============
-docker_utils = { path = "crates/docker_utils", version = "0.3" }
-service_utils = { path = "crates/service_utils", version = "0.3" }
-wait_utils = { path = "crates/wait_utils", version = "0.2" }
+docker_utils = { path = "crates/docker_utils", version = "0.4" }
+service_utils = { path = "crates/service_utils", version = "0.4" }
+wait_utils = { path = "crates/wait_utils", version = "0.4" }
 service_example = { path = "examples/service_example" }
 # ==============
 # External crates
 # ==============
-bon = {version = "3.9", default-features = false}
-reqwest = { version = "0.13", default-features = false, features = ["rustls", "json", "gzip"] }
 serde = { version = "1.0",features = ["derive"]}
 tokio = { version = "1", default-features = false, features = ["macros", "net", "rt-multi-thread", "signal", "time"] }
 tonic = { version = "0.14", features = ["transport"] }

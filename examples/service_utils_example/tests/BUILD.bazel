@@ -25,10 +25,6 @@ rust_test_suite(
         "//alias:service_example",
         # Internal crates
         "//alias:service_utils",
-        # External crates
-        "//thirdparty/crates:reqwest",
-        "//thirdparty/crates:serde",
-        "//thirdparty/crates:tokio",
     ],
 )
 

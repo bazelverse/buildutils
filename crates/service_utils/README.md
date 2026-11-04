@@ -53,9 +53,34 @@ this and documents the additional steps required. See [Running under Cargo](#run
 started. Pass it to `stop_service` when you are done:
 
 ```rust
-let pid = service_util.start_service_from_config(config).await?;
+let pid = service_util.start_service_from_config(config)?;
 // ... exercise the service ...
-service_util.stop_service(pid)?;
+let status = service_util.stop_service(pid)?;
+assert!(status.success());
+```
+
+`stop_service` sends SIGTERM, waits for the exit and returns its status. Whatever is still running when
+the `ServiceUtil` is dropped is killed and reaped, so a test leaves nothing holding its port.
+
+A service that exits while a wait strategy runs ends the wait at once, with `ServiceExited`, instead of
+timing out. To check one that must refuse to start, read its exit code:
+
+```rust
+let pid = service_util.start_service("service1", None, &WaitStrategy::NoWait, None)?;
+let status = service_util.wait_for_exit(pid, Duration::from_secs(10))?;
+assert_eq!(status.code(), Some(78));
+```
+
+Two options isolate a service and let a test read what it logged:
+
+```rust
+let config = ServiceStartConfig::builder()
+    .program("service1")
+    .wait_strategy(WaitStrategy::NoWait)
+    .env_vars(vec![("NAME".into(), "value".into())])
+    .clear_env(true)              // `env_vars` alone; nothing of the test's environment
+    .stderr_file("/tmp/svc.log")  // created afresh
+    .build();
 ```
 
 Under Bazel stopping is optional housekeeping: every test runs in a sandbox that takes the
@@ -106,13 +131,12 @@ service_utils = "0.2"
 ```rust
 use service_utils::*;
  
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize ServiceUtil with the path to your binaries
     let service_util = ServiceUtil::new(
         "/path/to/binaries",
         vec!["service1", "service2"]
-    ).await?;
+    )?;
 
     // Start a service with a wait strategy. The PID comes back so it can be stopped again.
     let pid = service_util.start_service(
@@ -120,7 +144,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
         &WaitStrategy::WaitForDuration(5),
         None,
-    ).await?;
+    )?;
 
     service_util.stop_service(pid)?;
 
@@ -141,7 +165,7 @@ use service_utils::*;
         .env_vars(vec![("DEBUG".into(), "1".into())])
         .build();
 
-    let pid = service_util.start_service_from_config(config).await?;
+    let pid = service_util.start_service_from_config(config)?;
 ```
 
 The config also carries the address a caller would connect to, which is what a readiness probe
@@ -200,7 +224,6 @@ rust_test_suite(
         # External crates
         "//thirdparty/crates:reqwest",
         "//thirdparty/crates:serde",
-        "//thirdparty/crates:tokio",
     ],
 )
 
@@ -220,7 +243,7 @@ The crate provides several wait strategies through the `wait_utils` dependency:
 - `NoWait`: Return as soon as the service is started.
 - `WaitForDuration(u64)`: Wait for a specified number of seconds
 - `WaitForHttpHealthCheck(String, u64)`: Wait until an HTTP request to the given URL or until a timeout occurs.
-- `WaitForGrpcHealthCheck(String, u64)`: Wait until an gRPC health request to the given URL or until a timeout occurs.
+- `WaitForGrpcHealthCheck(String, u64)`, with the `grpc` feature: Wait until a gRPC health request to the given URL or until a timeout occurs.
 - `WaitUntilReady { probe, timeout_secs, retry_delay_ms }`: Wait until your own probe reports ready.
 
 `WaitUntilConsoleOutputContains` is not honoured here: it reads container logs, and this crate
@@ -251,7 +274,7 @@ instead of the cause.
 
 A probe is a plain `fn` pointer, so it cannot capture state; the address it needs comes from
 the `ProbeContext`. It is synchronous by contract and runs on a thread of its own, so it may
-build its own async runtime even when your test is already inside one.
+build its own async runtime whatever your test runs on.
 
 ## Error Handling 🚨
 
@@ -260,6 +283,7 @@ The crate uses a dedicated `ServiceUtilError` type that covers various failure s
 - Binary not found
 - Service start failure
 - Service stop failure
+- Service exited before it was ready, naming how
 - Wait strategy timeout, carrying the probe's own last message
 - Unsupported wait strategy for this driver
 - Environment configuration errors
@@ -272,7 +296,7 @@ Enable debug mode for additional logging and information:
 let service_util = ServiceUtil::with_debug(
     "/path/to/binaries",
     vec!["service1"]
-).await?;
+)?;
 ```
 
 ## Related Crates 📦

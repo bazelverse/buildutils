@@ -6,7 +6,6 @@
 use std::fmt::Display;
 use wait_utils::WaitStrategy;
 // https://github.com/elastio/bon
-use bon::Builder;
 
 /// Create a new instance of the `ContainerConfig` struct with the given parameters.
 ///
@@ -62,7 +61,7 @@ use bon::Builder;
 ///         .build();
 /// ```
 ///
-#[derive(Builder, Debug, Default, Clone, Eq, PartialOrd, Ord, PartialEq, Hash)]
+#[derive(Debug, Default, Clone, Eq, PartialOrd, Ord, PartialEq, Hash)]
 pub struct ContainerConfig<'l> {
     name: &'l str,
     image: &'l str,
@@ -85,12 +84,161 @@ pub struct ContainerConfig<'l> {
     ///
     /// Optional in the builder and defaults to `false`, so existing configurations
     /// keep publishing ports exactly as before.
-    #[builder(default)]
     host_network: bool,
     wait_strategy: WaitStrategy,
 }
 
+/// Builds a [`ContainerConfig`]. Every field is required but the optional ones and `host_network`,
+/// which defaults to `false`.
+#[derive(Debug, Default, Clone)]
+pub struct ContainerConfigBuilder<'l> {
+    name: Option<&'l str>,
+    image: Option<&'l str>,
+    tag: Option<&'l str>,
+    url: Option<&'l str>,
+    connection_port: Option<u16>,
+    reuse_container: Option<bool>,
+    keep_configuration: Option<bool>,
+    additional_ports: Option<&'l [u16]>,
+    additional_env_vars: Option<&'l [&'l str]>,
+    volumes: Option<&'l [&'l str]>,
+    platform: Option<&'l str>,
+    host_network: bool,
+    wait_strategy: Option<WaitStrategy>,
+}
+
+impl<'l> ContainerConfigBuilder<'l> {
+    /// The name of the container.
+    #[must_use]
+    pub fn name(mut self, name: &'l str) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    /// The image to use for the container.
+    #[must_use]
+    pub fn image(mut self, image: &'l str) -> Self {
+        self.image = Some(image);
+        self
+    }
+
+    /// The tag of the image.
+    #[must_use]
+    pub fn tag(mut self, tag: &'l str) -> Self {
+        self.tag = Some(tag);
+        self
+    }
+
+    /// The default URL of the container.
+    #[must_use]
+    pub fn url(mut self, url: &'l str) -> Self {
+        self.url = Some(url);
+        self
+    }
+
+    /// The port number of the main connection.
+    #[must_use]
+    pub fn connection_port(mut self, connection_port: u16) -> Self {
+        self.connection_port = Some(connection_port);
+        self
+    }
+
+    /// Whether to reuse an existing container.
+    #[must_use]
+    pub fn reuse_container(mut self, reuse_container: bool) -> Self {
+        self.reuse_container = Some(reuse_container);
+        self
+    }
+
+    /// Whether to keep the configuration.
+    #[must_use]
+    pub fn keep_configuration(mut self, keep_configuration: bool) -> Self {
+        self.keep_configuration = Some(keep_configuration);
+        self
+    }
+
+    /// Additional ports to publish.
+    #[must_use]
+    pub fn additional_ports(mut self, additional_ports: &'l [u16]) -> Self {
+        self.additional_ports = Some(additional_ports);
+        self
+    }
+
+    /// Additional environment variables.
+    #[must_use]
+    pub fn additional_env_vars(mut self, additional_env_vars: &'l [&'l str]) -> Self {
+        self.additional_env_vars = Some(additional_env_vars);
+        self
+    }
+
+    /// Bind mounts, each in Docker's `-v` form.
+    #[must_use]
+    pub fn volumes(mut self, volumes: &'l [&'l str]) -> Self {
+        self.volumes = Some(volumes);
+        self
+    }
+
+    /// The platform, for an image that is not multi-arch.
+    #[must_use]
+    pub fn platform(mut self, platform: &'l str) -> Self {
+        self.platform = Some(platform);
+        self
+    }
+
+    /// Runs the container on the host network instead of publishing ports.
+    #[must_use]
+    pub fn host_network(mut self, host_network: bool) -> Self {
+        self.host_network = host_network;
+        self
+    }
+
+    /// How to wait for the container to become ready.
+    #[must_use]
+    pub fn wait_strategy(mut self, wait_strategy: WaitStrategy) -> Self {
+        self.wait_strategy = Some(wait_strategy);
+        self
+    }
+
+    /// The configuration.
+    ///
+    /// # Panics
+    ///
+    /// Panics naming the required field that was not set: a test written without one is a
+    /// mistake in that test, found on its first run.
+    pub fn build(self) -> ContainerConfig<'l> {
+        ContainerConfig {
+            name: self.name.expect("ContainerConfig needs a name"),
+            image: self.image.expect("ContainerConfig needs a image"),
+            tag: self.tag.expect("ContainerConfig needs a tag"),
+            url: self.url.expect("ContainerConfig needs a url"),
+            connection_port: self
+                .connection_port
+                .expect("ContainerConfig needs a connection_port"),
+            reuse_container: self
+                .reuse_container
+                .expect("ContainerConfig needs a reuse_container"),
+            keep_configuration: self
+                .keep_configuration
+                .expect("ContainerConfig needs a keep_configuration"),
+            additional_ports: self.additional_ports,
+            additional_env_vars: self.additional_env_vars,
+            volumes: self.volumes,
+            platform: self.platform,
+            host_network: self.host_network,
+            wait_strategy: self
+                .wait_strategy
+                .expect("ContainerConfig needs a wait_strategy"),
+        }
+    }
+}
+
 impl<'l> ContainerConfig<'l> {
+    /// A builder of a configuration.
+    #[must_use]
+    pub fn builder() -> ContainerConfigBuilder<'l> {
+        ContainerConfigBuilder::default()
+    }
+
     /// Create a new instance of the `ContainerConfig` struct with the given parameters.
     ///
     /// # Arguments

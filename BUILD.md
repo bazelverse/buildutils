@@ -40,7 +40,6 @@ Because not everyone is familiar with Bazel, I made a makefile to simplify all b
     make lint           Lints and formats the code of the project.
     make fix            Fixes linting issues as reported by clippy.
     make test           Tests across all crates.
-    make vendor         Vendors all Bazel managed Rust dependencies to folder thirdparty.
 ```
 
 
@@ -50,24 +49,15 @@ Because not everyone is familiar with Bazel, I made a makefile to simplify all b
 To build only a single target, run `make current` and specify the target in the current.txt file.
 The command in the underlying shell script is the Bazel equivalent to Cargo build -p target.
 
-## Vendoring
+## Dependencies
 
-To vendor all Bazel managed dependencies, run `make vendor`. Bazel then resolves all dependencies,
-stores them in thirdparty, and makes them available to the project under the //thirdparty/crates namespace.
-If your build target depends, for example, on rustls and Tokio, then you add the following to your target dependency list:
+External crates come from `Cargo.toml` and `Cargo.lock`: `rules_rs` resolves them with no vendored copy, so a dependency is added in
+the manifest and nowhere else. A target names one as `@crates//:name`:
 
 ```text
     deps = [
         # External crates
-        "//thirdparty/crates:rustls",
-        "//thirdparty/crates:tokio",
-        #...  
+        "@crates//:serde",
+        "@crates//:tokio",
     ],
-```    
-
-Notice, only vendored dependencies are available to build targets. When you add new Rust dependencies
-to `thirdparty/BUILD.bazel`, you have to call `make vendor `first before you can use them.
-
-No vendoring has been configured for Cargo although this should be possible. Please refer
-to the official Cargo documentation for more information.
-
+```

@@ -37,14 +37,17 @@ match wait_until_http_health_check(true, health_url, &timeout_secs) {
 
 #### gRPC Health Check
 
+Behind the `grpc` feature, the one strategy that needs more than `std`. It runs on a private
+runtime on its own thread, so a caller stays synchronous, inside an async runtime of its own or not.
+
 ```rust
 use wait_utils::wait_until_grpc_health_check;
 
-async fn check_grpc_health() {
+fn check_grpc_health() {
     let health_url = "http://localhost:50051";
     let timeout_secs = 30;
 
-    match wait_until_grpc_health_check(true, health_url, &timeout_secs).await {
+    match wait_until_grpc_health_check(true, health_url, &timeout_secs) {
         Ok(_) => println!("gRPC service is healthy!"),
         Err(e) => eprintln!("gRPC health check failed: {}", e),
     }
@@ -125,8 +128,7 @@ runtime, so a probe may build one of its own.
 
 ## Which driver honours which strategy
 
-`WaitStrategy` is a shared vocabulary with two drivers. `docker_utils` applies it synchronously
-to containers, `service_utils` applies it asynchronously to locally started binaries. Not every
+`WaitStrategy` is a shared vocabulary with two drivers. `docker_utils` applies it to containers, `service_utils` to locally started binaries. Not every
 variant can be honoured by both, and a driver that cannot honour one reports it rather than
 waiting:
 
@@ -136,7 +138,7 @@ waiting:
 | `WaitForDuration` | yes | yes |
 | `WaitUntilConsoleOutputContains` | yes | no, there is no container to read logs from |
 | `WaitForHttpHealthCheck` | yes | yes |
-| `WaitForGrpcHealthCheck` | no, the driver is synchronous | yes |
+| `WaitForGrpcHealthCheck`, with the `grpc` feature | yes | yes |
 | `WaitUntilReady` | yes | yes |
 
 ## One-shot predicates
@@ -166,3 +168,9 @@ This project is licensed under the [MIT license](LICENSE).
 * [Marvin Hansen](https://github.com/marvin-hansen)
 * Contact: https://deepcausality.com/contact/
 * Github GPG key ID: 369D5A0B210D39BC
+
+## No tools on the host
+
+The crate is `std` alone. The HTTP health check speaks plain HTTP/1.1 over a `TcpStream`, so it needs no `curl`
+on the host and works in a minimal sandbox. An `https://` URL is refused at once, by name, since verifying a
+certificate takes a TLS stack this crate does not carry.

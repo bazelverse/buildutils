@@ -72,7 +72,7 @@ pub type ProbeFn = fn(&ProbeContext) -> Probe<(), String>;
 /// | `WaitForDuration` | yes | yes |
 /// | `WaitUntilConsoleOutputContains` | yes | no, there is no container to read logs from |
 /// | `WaitForHttpHealthCheck` | yes | yes |
-/// | `WaitForGrpcHealthCheck` | no, the driver is synchronous | yes |
+/// | `WaitForGrpcHealthCheck`, with the `grpc` feature | yes | yes |
 /// | `WaitUntilReady` | yes | yes |
 ///
 /// A driver that cannot honour a variant reports it as an error rather than waiting.
@@ -95,6 +95,7 @@ pub enum WaitStrategy {
     WaitForDuration(u64),
     WaitUntilConsoleOutputContains(String, u64),
     WaitForHttpHealthCheck(String, u64),
+    #[cfg(feature = "grpc")]
     WaitForGrpcHealthCheck(String, u64),
     WaitUntilReady {
         probe: ProbeFn,

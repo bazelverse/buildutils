@@ -340,13 +340,11 @@ impl DockerUtil {
                 })
             }
 
-            // Honoured by service_utils, whose driver is async. Reported rather than waited on,
-            // so that a caller learns immediately instead of after a timeout.
-            WaitStrategy::WaitForGrpcHealthCheck(_, _) => Err(DockerError::from(
-                "WaitForGrpcHealthCheck needs an async driver and is not supported by \
-                 docker_utils. Use service_utils, or express the check as WaitUntilReady."
-                    .to_string(),
-            )),
+            #[cfg(feature = "grpc")]
+            WaitStrategy::WaitForGrpcHealthCheck(url, timeout) => {
+                wait_utils::wait_until_grpc_health_check(self.dbg, url, timeout)
+                    .map_err(|e| DockerError::from(e.to_string()))
+            }
 
             WaitStrategy::WaitUntilReady {
                 probe,

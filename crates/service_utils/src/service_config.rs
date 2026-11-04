@@ -3,9 +3,8 @@
  * Copyright (c) "2025" . The buildutils Authors and Contributors. All Rights Reserved.
  */
 
-// https://github.com/elastio/bon
-use bon::Builder;
 use std::fmt::{Display, Formatter};
+use std::path::{Path, PathBuf};
 use wait_utils::WaitStrategy;
 
 /// Create a new instance of the `ServiceStartConfig` struct using the builder.
@@ -49,14 +48,13 @@ use wait_utils::WaitStrategy;
 ///
 /// Returns a new `ServiceStartConfig` instance.
 ///
-#[derive(Builder, Debug, Default, Clone, Eq, PartialOrd, Ord, PartialEq, Hash)]
+#[derive(Debug, Default, Clone, Eq, PartialOrd, Ord, PartialEq, Hash)]
 pub struct ServiceStartConfig {
     program: &'static str,
     wait_strategy: WaitStrategy,
     program_args: Option<Vec<&'static str>>,
     env_vars: Option<Vec<(String, String)>>,
     /// The host a caller would connect to, handed to a readiness probe.
-    #[builder(default = "localhost")]
     host: &'static str,
     /// The port a caller would connect to, handed to a readiness probe.
     ///
@@ -64,9 +62,113 @@ pub struct ServiceStartConfig {
     /// [`WaitStrategy::WaitUntilReady`], which reports a clear error when it is missing
     /// rather than probing a made-up address.
     port: Option<u16>,
+    /// The file the service's stderr goes to, created afresh, so a test can read what it logged.
+    stderr_file: Option<PathBuf>,
+    /// Whether the service starts with `env_vars` alone in its environment, so nothing of the
+    /// caller's own environment can reach its configuration.
+    clear_env: bool,
+}
+
+/// Builds a [`ServiceStartConfig`]. `program` and `wait_strategy` are required, and `host`
+/// defaults to `localhost`.
+#[derive(Debug, Default, Clone)]
+pub struct ServiceStartConfigBuilder {
+    program: Option<&'static str>,
+    wait_strategy: Option<WaitStrategy>,
+    program_args: Option<Vec<&'static str>>,
+    env_vars: Option<Vec<(String, String)>>,
+    host: Option<&'static str>,
+    port: Option<u16>,
+    stderr_file: Option<PathBuf>,
+    clear_env: bool,
+}
+
+impl ServiceStartConfigBuilder {
+    /// The name of the program to start.
+    #[must_use]
+    pub fn program(mut self, program: &'static str) -> Self {
+        self.program = Some(program);
+        self
+    }
+
+    /// How to wait for the service to become ready.
+    #[must_use]
+    pub fn wait_strategy(mut self, wait_strategy: WaitStrategy) -> Self {
+        self.wait_strategy = Some(wait_strategy);
+        self
+    }
+
+    /// The program's arguments.
+    #[must_use]
+    pub fn program_args(mut self, program_args: Vec<&'static str>) -> Self {
+        self.program_args = Some(program_args);
+        self
+    }
+
+    /// Environment variables to set when starting the service.
+    #[must_use]
+    pub fn env_vars(mut self, env_vars: Vec<(String, String)>) -> Self {
+        self.env_vars = Some(env_vars);
+        self
+    }
+
+    /// The host a caller would connect to.
+    #[must_use]
+    pub fn host(mut self, host: &'static str) -> Self {
+        self.host = Some(host);
+        self
+    }
+
+    /// The port a caller would connect to.
+    #[must_use]
+    pub fn port(mut self, port: u16) -> Self {
+        self.port = Some(port);
+        self
+    }
+
+    /// The file the service's stderr goes to, created afresh when it starts.
+    #[must_use]
+    pub fn stderr_file(mut self, stderr_file: impl Into<PathBuf>) -> Self {
+        self.stderr_file = Some(stderr_file.into());
+        self
+    }
+
+    /// Whether the service starts with `env_vars` alone in its environment.
+    #[must_use]
+    pub fn clear_env(mut self, clear_env: bool) -> Self {
+        self.clear_env = clear_env;
+        self
+    }
+
+    /// The configuration.
+    ///
+    /// # Panics
+    ///
+    /// Panics naming `program` or `wait_strategy` when it was not set: a test written without
+    /// one is a mistake in that test, found on its first run.
+    pub fn build(self) -> ServiceStartConfig {
+        ServiceStartConfig {
+            program: self.program.expect("ServiceStartConfig needs a program"),
+            wait_strategy: self
+                .wait_strategy
+                .expect("ServiceStartConfig needs a wait_strategy"),
+            program_args: self.program_args,
+            env_vars: self.env_vars,
+            host: self.host.unwrap_or("localhost"),
+            port: self.port,
+            stderr_file: self.stderr_file,
+            clear_env: self.clear_env,
+        }
+    }
 }
 
 impl ServiceStartConfig {
+    /// A builder of a configuration.
+    #[must_use]
+    pub fn builder() -> ServiceStartConfigBuilder {
+        ServiceStartConfigBuilder::default()
+    }
+
     /// Create a new instance of the `ServiceStartConfig` struct using the constructor.
     ///
     /// The `program` is the name of the program to start. The `wait_strategy`
@@ -110,6 +212,8 @@ impl ServiceStartConfig {
             env_vars,
             host,
             port,
+            stderr_file: None,
+            clear_env: false,
         }
     }
 }
@@ -144,6 +248,18 @@ impl ServiceStartConfig {
     #[inline]
     pub const fn port(&self) -> Option<u16> {
         self.port
+    }
+
+    /// The file the service's stderr goes to, if one was named.
+    #[inline]
+    pub fn stderr_file(&self) -> Option<&Path> {
+        self.stderr_file.as_deref()
+    }
+
+    /// Whether the service starts with `env_vars` alone in its environment.
+    #[inline]
+    pub const fn clear_env(&self) -> bool {
+        self.clear_env
     }
 }
 

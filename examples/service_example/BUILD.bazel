@@ -16,9 +16,9 @@ rust_binary(
         # Internal crates
         "//alias:docker_utils",
         # External crates
-        "//thirdparty/crates:serde",
-        "//thirdparty/crates:tokio",
-        "//thirdparty/crates:warp",
+        "@crates//:serde",
+        "@crates//:tokio",
+        "@crates//:warp",
     ],
 )
 

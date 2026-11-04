@@ -1,6 +1,6 @@
 [package]
 name = "wait_utils"
-version = "0.2.0"
+version = "0.4.0"
 description = "Utilities for implementing wait loops using varies wait strategies"
 readme = "README.md"
 edition.workspace = true
@@ -18,7 +18,11 @@ exclude = ["*.bazel", "*/*.bazel",  "*.bazel.*", "BUILD", "BUILD.bazel", "MODULE
 workspace = true
 
 
+[features]
+# The gRPC health check, the one strategy std cannot provide. It runs on a private runtime, so a caller sees no async.
+grpc = ["dep:tokio", "dep:tonic", "dep:tonic-health"]
+
 [dependencies]
-tokio = {workspace = true}
-tonic = { workspace = true }
-tonic-health = { workspace = true }
+tokio = { workspace = true, optional = true }
+tonic = { workspace = true, optional = true }
+tonic-health = { workspace = true, optional = true }

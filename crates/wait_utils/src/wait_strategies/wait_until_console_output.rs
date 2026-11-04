@@ -6,8 +6,7 @@
 use crate::WaitStrategyError;
 use crate::utils::utils_test::streams_contain;
 use std::process::Command;
-use std::time::Duration;
-use tokio::time::Instant;
+use std::time::{Duration, Instant};
 
 /// Waits until the console output of the container with the given ID contains the
 /// specified expected output. If the expected output is not found within the given

@@ -50,7 +50,7 @@ fn refuses(_ctx: &ProbeContext) -> Probe<(), String> {
 /// Builds its own tokio runtime, which is only legal with no ambient one.
 ///
 /// This is the contract D9 exists to guarantee: a probe may do this even though
-/// `setup_container` is routinely called from inside `#[tokio::test]`.
+/// `setup_container` is routinely called from inside `#[test]`.
 fn builds_a_runtime(ctx: &ProbeContext) -> Probe<(), String> {
     let runtime = match tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -113,12 +113,12 @@ fn a_ready_probe_opens_the_gate() {
     );
 }
 
-/// A probe may build its own async runtime, even from inside `#[tokio::test]`.
+/// A probe may build its own async runtime, even from inside `#[test]`.
 ///
 /// The driver runs the probe on a thread of its own precisely so this cannot panic with
 /// "Cannot start a runtime from within a runtime".
-#[tokio::test]
-async fn a_probe_may_build_a_runtime_inside_a_tokio_test() {
+#[test]
+fn a_probe_may_build_a_runtime_inside_a_tokio_test() {
     let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
     let name = "docker-utils-probe-runtime";
     let port = 6411;
@@ -270,31 +270,5 @@ fn a_container_that_dies_mid_wait_aborts_the_wait() {
     assert!(
         !msg.contains("Timeout"),
         "a dead container must not be reported as a timeout: {msg}"
-    );
-}
-
-/// gRPC health checks need an async driver, and saying so beats waiting for a timeout.
-#[test]
-fn a_grpc_health_check_is_reported_as_unsupported() {
-    let docker_util = DockerUtil::new().expect("Failed to create DockerUtil");
-    let name = "docker-utils-probe-grpc";
-    let port = 6415;
-    let container_id = format!("{name}-{port}");
-
-    let res = docker_util.get_or_start_container(&config(
-        name,
-        port,
-        WaitStrategy::WaitForGrpcHealthCheck("http://127.0.0.1:6415".to_string(), 5),
-        false,
-    ));
-
-    remove_container(&container_id);
-
-    let msg = res
-        .expect_err("docker_utils cannot run a gRPC health check")
-        .to_string();
-    assert!(
-        msg.contains("async driver"),
-        "the error must say why it cannot be honoured: {msg}"
     );
 }

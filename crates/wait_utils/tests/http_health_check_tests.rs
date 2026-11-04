@@ -42,9 +42,8 @@ fn spawn_http_server(status_line: &'static str, body: &'static str) -> u16 {
 /// A health endpoint that reports it is not ready must not end the wait.
 ///
 /// Dgraph answers /health with 503 and "Please retry again, server is not ready to accept
-/// requests" while it is still starting, which is a health endpoint doing its job. curl
-/// without --fail exits successfully for that response, so the strategy used to report
-/// readiness as soon as the port answered at all.
+/// requests" while it is still starting, which is a health endpoint doing its job, so a
+/// response is not enough: its status must say ready.
 #[test]
 fn test_http_health_check_rejects_a_503() {
     let port = spawn_http_server(
@@ -97,4 +96,13 @@ fn test_http_health_check_times_out_when_nothing_listens() {
     let res = wait_until_http_health_check(false, &health_url, &2);
 
     assert!(res.is_err(), "An unreachable endpoint must not be ready");
+}
+
+/// A URL that can never be probed fails at once, rather than after its whole timeout.
+#[test]
+fn test_http_health_check_refuses_https_at_once() {
+    let started = std::time::Instant::now();
+    let refused = wait_until_http_health_check(false, "https://localhost:1/health", &30);
+    assert!(refused.is_err());
+    assert!(started.elapsed().as_secs() < 5, "it waited out the timeout");
 }

@@ -14,6 +14,7 @@ pub use crate::types::enum_wait_strategy::*;
 pub use crate::types::probe_context::*;
 pub use crate::utils::utils_test;
 pub use crate::wait_strategies::wait_until_console_output::*;
+#[cfg(feature = "grpc")]
 pub use crate::wait_strategies::wait_until_grpc_health_check::*;
 pub use crate::wait_strategies::wait_until_http_health_check::*;
 pub use crate::wait_strategies::wait_until_ready::*;

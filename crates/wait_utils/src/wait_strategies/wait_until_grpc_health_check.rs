@@ -4,8 +4,7 @@
  */
 
 use crate::WaitStrategyError;
-use std::time::Duration;
-use tokio::time::Instant;
+use std::time::{Duration, Instant};
 use tonic::transport::Channel;
 use tonic_health::pb::HealthCheckRequest;
 use tonic_health::pb::health_client::HealthClient;
@@ -18,29 +17,56 @@ use tonic_health::pb::health_client::HealthClient;
 /// The health check is done by calling the `Check` method on the gRPC health
 /// service. The `service` parameter of the `HealthCheckRequest` is an empty string.
 ///
-pub async fn wait_until_grpc_health_check(
+///
+/// The check runs on a private runtime on its own thread, so a caller stays synchronous and
+/// may call this from anywhere, inside an async runtime of its own included.
+///
+pub fn wait_until_grpc_health_check(
     dbg: bool,
     health_url: &str,
     timeout: &u64,
 ) -> Result<(), WaitStrategyError> {
+    let (url, timeout) = (health_url.to_string(), *timeout);
+    let check = std::thread::spawn(move || {
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(|e| {
+                WaitStrategyError(format!(
+                    "[wait_until_grpc_health_check]: could not build its runtime: {e}"
+                ))
+            })?
+            .block_on(check_until_healthy(dbg, &url, timeout))
+    });
+    check.join().map_err(|_| {
+        WaitStrategyError("[wait_until_grpc_health_check]: the check panicked".to_string())
+    })?
+}
+
+async fn check_until_healthy(
+    dbg: bool,
+    health_url: &str,
+    timeout: u64,
+) -> Result<(), WaitStrategyError> {
+    let endpoint = Channel::from_shared(health_url.to_string()).map_err(|e| {
+        WaitStrategyError(format!(
+            "[wait_until_grpc_health_check]: {health_url} is no valid URI: {e}"
+        ))
+    })?;
     let start_time = Instant::now();
+    let timeout = Duration::from_secs(timeout);
 
     loop {
         tokio::time::sleep(Duration::from_millis(50)).await;
-        let timeout = Duration::from_secs(*timeout);
 
         if start_time.elapsed().as_secs() > timeout.as_secs() {
             return Err(WaitStrategyError(format!(
-                "[wait_until_grpc_health_check]: !!Timeout!! Waited {} seconds for service health check",
+                "[wait_until_grpc_health_check]: !!Timeout!! Waited {} seconds for service health check to pass.",
                 timeout.as_secs(),
             )));
         }
 
-        match Channel::from_shared(health_url.to_string())
-            .expect("valid uri")
-            .connect()
-            .await
-        {
+        match endpoint.connect().await {
             Ok(channel) => {
                 let mut client = HealthClient::new(channel);
                 let request = tonic::Request::new(HealthCheckRequest {
@@ -56,13 +82,11 @@ pub async fn wait_until_grpc_health_check(
                     }
                     Err(e) => {
                         println!("[wait_until_grpc_health_check]: Health check failed: {e}");
-                        continue;
                     }
                 }
             }
             Err(e) => {
                 println!("[wait_until_grpc_health_check]: Connection failed: {e}");
-                continue;
             }
         }
     }

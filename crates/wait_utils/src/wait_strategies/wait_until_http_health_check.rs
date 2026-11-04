@@ -4,29 +4,35 @@
  */
 
 use crate::WaitStrategyError;
-use crate::utils::utils_test::build_curl_args;
-use std::process::Command;
-use std::time::Duration;
-use tokio::time::Instant;
+use crate::utils::utils_test::{HttpTarget, http_status, parse_http_url};
+use std::time::{Duration, Instant};
+
+/// How long one probe may take: a listener that accepts and says nothing is not ready.
+const PROBE_TIMEOUT: Duration = Duration::from_secs(2);
 
 /// Waits until the health check URL responds with a success status.
 ///
 /// Only a status below 400 counts as ready. A service that is already listening but reports
 /// itself as not ready, typically with a 503, keeps the wait going rather than ending it.
 ///
+/// The check is plain HTTP/1.1 over `std`, so it needs no tool on the host and no runtime.
+///
 /// # Arguments
 ///
-/// * `health_url` - The URL to ping for health check.
+/// * `health_url` - The URL to ping for health check, `http://host[:port][/path]`.
 ///
 /// # Returns
 ///
-/// Returns a `ServiceUtilError` if the healthcheck times out.
+/// Returns a `WaitStrategyError` if the healthcheck times out, and at once for a URL it
+/// cannot probe, such as an `https://` one, since waiting could not change that.
 ///
 pub fn wait_until_http_health_check(
     dbg: bool,
     health_url: &str,
     timeout: &u64,
 ) -> Result<(), WaitStrategyError> {
+    let target = parse_http_url(health_url)
+        .map_err(|e| WaitStrategyError(format!("[wait_until_http_health_check]: {e}")))?;
     let start_time = Instant::now();
     let timeout = Duration::from_secs(*timeout);
 
@@ -35,32 +41,16 @@ pub fn wait_until_http_health_check(
 
         if start_time.elapsed().as_secs() > timeout.as_secs() {
             return Err(WaitStrategyError(format!(
-                "[wait_until_http_health_check]: !!Timeout!! Waited {} seconds for service health check",
+                "[wait_until_http_health_check]: !!Timeout!! Waited {} seconds for service health check to pass.",
                 timeout.as_secs(),
             )));
         }
 
-        let mut cmd = Command::new("curl");
-        cmd.args(build_curl_args(health_url));
-
-        if let Ok(out) = cmd.output() {
+        if probe(dbg, &target) {
             if dbg {
-                println!(
-                    "[wait_until_http_health_check]: \n
-                    success: {} \n
-                    Error: {}",
-                    out.status.success(),
-                    String::from_utf8_lossy(out.stderr.as_slice()).trim(),
-                );
+                println!("Service online");
             }
-
-            if out.status.success() {
-                if dbg {
-                    println!("Service online");
-                }
-
-                break Ok(());
-            }
+            return Ok(());
         }
     }
 }
@@ -78,26 +68,36 @@ pub fn wait_until_http_health_check(
 ///
 /// # Returns
 ///
-/// Returns whether the endpoint answered with a status below 400. Any failure to run curl at
-/// all counts as not ready.
+/// Returns whether the endpoint answered with a status below 400. A URL that cannot be
+/// probed, or any failure to reach the endpoint, counts as not ready.
 ///
 pub fn http_check_ok(dbg: bool, health_url: &str) -> bool {
-    let mut cmd = Command::new("curl");
-    cmd.args(build_curl_args(health_url));
+    match parse_http_url(health_url) {
+        Ok(target) => probe(dbg, &target),
+        Err(e) => {
+            if dbg {
+                println!("[http_check_ok]: {e}");
+            }
+            false
+        }
+    }
+}
 
-    match cmd.output() {
-        Ok(out) => {
-            if dbg && !out.status.success() {
+fn probe(dbg: bool, target: &HttpTarget) -> bool {
+    match http_status(target, PROBE_TIMEOUT) {
+        Ok(status) if status < 400 => true,
+        Ok(status) => {
+            if dbg {
                 println!(
-                    "[http_check_ok]: {health_url} not ready: {}",
-                    String::from_utf8_lossy(out.stderr.as_slice()).trim()
+                    "[http_check]: {} not ready: status {status}",
+                    target.authority()
                 );
             }
-            out.status.success()
+            false
         }
         Err(e) => {
             if dbg {
-                println!("[http_check_ok]: failed to run curl: {e}");
+                println!("[http_check]: {} not ready: {e}", target.authority());
             }
             false
         }

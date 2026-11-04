@@ -31,7 +31,7 @@ rust_test_suite(
         # Internal crates
 
         # External crates
-        "//thirdparty/crates:tokio",
+        "@crates//:tokio",
     ],
 )
 

@@ -4,11 +4,13 @@
  */
 
 use crate::{ServiceStartConfig, ServiceUtil, ServiceUtilError};
-use std::process::Command;
+use std::fs::File;
+use std::path::Path;
+use std::process::{Command, Stdio};
 use wait_utils::WaitStrategy;
 
 impl ServiceUtil {
-    pub(crate) async fn start_config(
+    pub(crate) fn start_config(
         &self,
         service_start_config: ServiceStartConfig,
     ) -> Result<u32, ServiceUtilError> {
@@ -21,12 +23,20 @@ impl ServiceUtil {
         let port = service_start_config.port();
 
         // Start the service
-        self.start(program, program_args, env_vars, host, port, wait_strategy)
-            .await
+        self.start(
+            program,
+            program_args,
+            env_vars,
+            host,
+            port,
+            wait_strategy,
+            service_start_config.stderr_file(),
+            service_start_config.clear_env(),
+        )
     }
 
     #[allow(clippy::too_many_arguments)]
-    pub(crate) async fn start(
+    pub(crate) fn start(
         &self,
         program: &str,
         program_args: Option<Vec<&str>>,
@@ -34,6 +44,8 @@ impl ServiceUtil {
         host: &'static str,
         port: Option<u16>,
         wait_strategy: WaitStrategy,
+        stderr_file: Option<&Path>,
+        clear_env: bool,
     ) -> Result<u32, ServiceUtilError> {
         // Check if the program is in the binaries vector
         if !self.binaries().contains(&program) {
@@ -58,10 +70,26 @@ impl ServiceUtil {
             .arg("+x")
             .arg(&bin)
             .output()
-            .expect("Failed to set program to executable");
+            .map_err(|e| {
+                ServiceUtilError::ServiceStartFailed(format!("could not run chmod: {e}"))
+            })?;
 
         self.dbg_print("Constructing start command");
         let mut cmd = Command::new(bin);
+
+        if clear_env {
+            cmd.env_clear();
+        }
+
+        if let Some(file) = stderr_file {
+            let stderr = File::create(file).map_err(|e| {
+                ServiceUtilError::ServiceStartFailed(format!(
+                    "could not create {} for '{program}': {e}",
+                    file.display()
+                ))
+            })?;
+            cmd.stderr(Stdio::from(stderr));
+        }
 
         if let Some(env_vars) = env_vars {
             self.dbg_print("Setting environment variables");
@@ -79,22 +107,14 @@ impl ServiceUtil {
 
         self.dbg_print(&format!("Run start command: {:?}", cmd));
 
-        // The service is intentionally detached so that it outlives this call: `wait_for_program`
-        // below polls it until it is ready, so reaping it here with `wait()` would block forever.
-        // Its PID is returned instead, so the caller can stop it with `stop_service`.
-        //
-        // Under Bazel this is optional housekeeping, because the sandbox takes the process down
-        // with it. Under Cargo there is no sandbox, so a service left running holds its port
-        // until the machine is rebooted, and the next run of the same test cannot bind.
-        #[allow(clippy::zombie_processes)]
         let child = cmd.spawn().map_err(|e| {
             ServiceUtilError::ServiceStartFailed(format!("could not start '{program}': {e}"))
         })?;
         let pid = child.id();
+        let _previous = self.children().insert(pid, child);
 
         self.dbg_print(&format!("Waiting for service to start. PID: {pid}"));
-        self.wait_for_program(program, host, port, &wait_strategy)
-            .await?;
+        self.wait_for_program(program, pid, host, port, wait_strategy)?;
 
         self.dbg_print("Service started");
 

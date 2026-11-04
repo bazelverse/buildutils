@@ -6,6 +6,7 @@ rust_library(
         "src/**",
     ]),
     crate_root = "src/lib.rs",
+    crate_features = ["grpc"],
     tags = [
         "service_utils",
     ],
@@ -13,8 +14,6 @@ rust_library(
     deps = [
         # Internal crates
         "//alias:wait_utils",
-        # External crates
-        "//thirdparty/crates:bon",
     ],
 )
 
